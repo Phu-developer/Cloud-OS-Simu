@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <title>CodePen - Microsoft Defrag (MSDOS) - Now on your browser!</title>
+  <style>
+@import url('https://fonts.googleapis.com/css?family=IBM+Plex+Mono:700');
+
+:root {
+  --bgColor: #5561ff;
+  --cyanColor: #44f0ff;
+  --redColor: #8f1b0e;
+  --greyColor: #aca8aa;
+  --blueColor: #0f06a6;
+  --normalFont: 'IBM Plex Mono', monospaced;
+}
+
+body {
+  margin: 0;
+  font-family: var(--normalFont);
+  background: black;
+  font-size: 21px;
+  display: flex;
+  align-items: center;
+  height: 98vh;
+}
+
+.screen {
+  width: 1024px;
+  height: 600px;
+  background: var(--bgColor);  
+  border: 3px solid #000;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  
+  position: relative;
+}
+
+.menu-top {
+  background: white;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 30px;
+}
+
+.help {
+  cursor: pointer;
+  padding: 0 10px;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.help:active {
+  background: black;
+  color: white;
+}
+
+.menu-bottom {
+  background: white;
+  display: flex;
+  justify-content: space-between;
+}
+
+.menu-bottom > div {
+    padding: 0 15px;    
+  }
+
+.menu-bottom span {
+    color: var(--redColor);
+  }
+
+/* Surface */
+
+.surface {
+  max-width: 95%;
+  margin: 1em auto;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+p {
+  text-align: left;
+}
+
+.block {
+  color: white;
+  font-size: 18px;
+  height: 21px;
+  display: inline-block;
+}
+
+.block::before {
+    width: 12px;
+    height: 21px;
+    display: flex;
+    text-align: center;
+    vertical-align: bottom;
+  }
+
+.block.used::before {   
+    content: "•";
+    height: 20px;
+    display: inline-block;
+    color: var(--bgColor);
+    background: yellow;      
+  }
+
+.block.used.frag::before {
+    background: white;
+  }
+
+.block.unused::before {     
+    content: "░";
+  }
+
+.block.reading::before { content: "r" }
+
+.block.writing::before { content: "W" }
+
+.block.writing::before,
+  .block.reading::before {
+    background: blue;
+    color: white;
+    transform: translateY(2px);
+  }
+
+.block.bad::before { 
+    content: "B";
+    height: 22px;
+    color: var(--redColor);
+    background: black;
+    transform: translateY(2px);
+  }
+
+.block.unmovable::before { content: "X" }
+
+/* Info */
+
+.info {
+  display: flex;
+}
+
+.info fieldset {
+    border: 2px solid white;
+    text-align: center;          
+    color: white;
+    width: 100%;
+    margin: 0 10px 10px 10px;
+    min-height: 100px;
+  }
+
+.info fieldset p {
+      margin: 0;      
+    }
+
+.info fieldset legend {
+      color: yellow;      
+    }
+
+.sb {
+  display: flex;
+  justify-content: space-between;
+}
+
+.progress {
+  width: 100%;
+  height: 22px;
+  background: #8791ff;
+}
+
+.progress .fill {
+    width: 0%;
+    height: 100%;
+    background: white;
+  }
+
+.grid2x2 {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  text-align: left;
+}
+
+/* Modals */
+
+.modals {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  pointer-events: none;
+}
+
+.dialog {
+  pointer-events: auto;
+  display: inline-block;
+  border: 3px solid white;
+  background: var(--cyanColor);
+  color: black;
+  font-weight: 700;
+  box-shadow: 15px 15px 0 black;
+  padding: 40px 60px;
+}
+
+.dialog a {
+    background: #888;
+    color: black;
+    font-family: var(--normalFont);
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    padding: 2px 45px;
+    margin: 0 10px;
+    border: 0;
+    box-shadow: 8px 8px 0 black;
+  }
+
+.dialog a:active {
+      box-shadow: none;
+      position: relative;
+      top: 8px;
+      left: 8px;
+    }
+
+.finished > div {
+  max-width: 500px;
+}
+
+.off { opacity: 0 }
+[hidden] { display: none }
+.center { text-align: center }
+</style>
+
+</head>
+<body>
+<!-- partial:index.partial.html -->
+<div class="screen">
+  <div class="menu-top">
+    <div>Optimize</div>
+    <div class="help">F1=Help</div>
+  </div>
+  
+  <div class="surface off">
+  </div>
+  
+  <div class="info off">
+    <fieldset>
+      <legend>Status</legend>
+      <p class="sb">
+        <span>Cluster <var class="currentcluster"></var></span>
+        <span><var class="percent">0</var>%</span>
+      </p>
+      <div class="progress">
+        <div class="fill"></div>
+      </div>
+      <p class="center">Elapsed Time: <time class="elapsedtime">00:00:00</time></p>
+      <div class="center">Full Optimization</div>
+    </fieldset>
+    
+    <fieldset>
+      <legend>Legend</legend>
+      <div class="grid2x2">
+        <div><span class="block used"></span> - Used</div>
+        <div><span class="block unused"></span> - Unused</div>
+        <div><span class="block reading"></span> - Reading</div>
+        <div><span class="block writing"></span> - Writing</div>
+        <div><span class="block bad"></span> - Bad</div>
+        <div><span class="block unmovable"></span> - Unmovable</div>
+      </div>
+      <p>Drive C:    1 block = <var class="clustersperblock"></var> clusters</p>      
+    </fieldset>
+  </div>
+  
+  <div class="menu-bottom">
+    <div><span>Press</span> Alt <span>or</span> F10 <span>to activate menu</span></div>
+    <div>| <span>Microsoft Defrag</span></div>
+  </div>  
+
+  <section class="modals">
+    <div class="testing dialog">
+      <p>Testing system memory...</p>
+    </div>
+
+    <div class="reading dialog" hidden>
+      <p>Reading disk information...</p>
+    </div>
+
+    <div class="analyzing dialog" hidden>
+      <p>Analyzing disk information...</p>
+      <p class="folders center">GAMES</p>
+    </div>
+    
+    <div class="finished dialog" hidden>
+      <p class="center">Optimization for Drive C: Complete</p>
+      <div>
+        <p class="center">You may optimize another drive or reconfigure optimization for the current drive.</p>
+      </div>
+      <div>
+        <a href="https://twitter.com/Manz/status/1130789484726038529" target="_blank">More info</a>
+        <a href="https://manzdev.github.io/" target="_blank">Exit DEFRAG</a>
+      </div>
+    </div>    
+  </section>
+</div>
+<!-- partial -->
+  <script >
+// Constants
+const TOTAL_BLOCKS = 1300;
+const TOTALCLUSTERS = 12600 + ~~(Math.random() * 4250);
+const CLUSTERSPERBLOCK = ~~(TOTALCLUSTERS / TOTAL_BLOCKS);
+
+// DOM
+const modals = document.querySelectorAll('.testing.dialog, .reading.dialog, .analyzing.dialog, .finished.dialog');
+const screens = document.querySelectorAll('.surface, .info');
+const surface = document.querySelector('.surface');
+const currentCluster = document.querySelector('.currentcluster');
+const percent = document.querySelector('.percent');
+const fill = document.querySelector('.fill');
+const elapsedTime = document.querySelector('.elapsedtime');
+
+// Block generator
+const genBlock = () => {
+  const num = ~~(Math.random() * 500);
+
+  if (num < 1)
+  return 'bad';
+  if (num < 2)
+  return 'unmovable';
+  if (num < 175)
+  return 'used frag';else
+
+  return 'unused';
+};
+
+// Generate surface
+for (let i = 0; i < TOTAL_BLOCKS; i++) {
+  const span = document.createElement('span');
+  span.className = `block ${genBlock()}`;
+  surface.appendChild(span);
+}
+
+document.querySelector('.clustersperblock').textContent = CLUSTERSPERBLOCK.toLocaleString('en');
+
+// Time Counter
+let time = 0;
+const updateTime = () => {
+  elapsedTime.textContent = new Date(time * 1000).toISOString().substr(11, 8);
+  time++;
+};
+
+// Ending phase
+const endDefrag = () => {
+  modals[3].hidden = false;
+  clearInterval(timer);
+};
+
+// Reading phase
+const readBlock = () => {
+  currentCluster.textContent = CLUSTERSPERBLOCK * currentBlock;
+  if (blocks[currentBlock].classList.contains('frag')) {
+    console.log(currentBlock, 'fragment detected');
+    blocks[currentBlock].classList.remove('frag');
+  } else
+  if (blocks[currentBlock].classList.contains('unused')) {
+    const fragments = document.querySelectorAll('.used.frag');
+    const p = ~~(currentBlock * 100 / totalBlocks);
+    percent.textContent = p;
+    fill.style.setProperty('width', `${p}%`);
+    if (fragments.length == 0) {
+      endDefrag();
+      return;
+    }
+    const num = ~~(Math.random() * fragments.length);
+    fragments[num].classList.remove('used', 'frag');
+    fragments[num].classList.add('unused', 'reading');
+    setTimeout(() => fragments[num].classList.remove('reading'), 200 + ~~(Math.random() * 800));
+    blocks[currentBlock].classList.remove('unused');
+    blocks[currentBlock].classList.add('used');
+  } else
+
+  currentBlock++;
+
+  setTimeout(readBlock, 50 + ~~(Math.random() * 50) + [0, 0, 0, 50, 200][~~(Math.random() * 5)]);
+};
+
+let currentBlock = 0;
+const totalBlocks = document.querySelectorAll('.used.frag').length;
+const blocks = document.querySelectorAll('.block');
+const folders = document.querySelector('.folders');
+
+const startDefrag = () => {
+  timer = setInterval(updateTime, 1000);
+  setTimeout(readBlock, 500);
+};
+
+const TAGS = ['GAMES', 'DOS', 'WINDOWS', 'AUTODESK', 'EMM386', 'PCSHELL',
+'ZIP', 'RAR', 'PORN', 'COREL', 'WOLF3D', 'TRACKERS', 'WORM',
+'NORTON', 'DOSHELL', 'INDY', 'MONKEY', 'SIMON', 'WORKS', '2DISK'];
+
+const startDialogs = () => {
+  setTimeout(() => {
+    modals[0].hidden = true;
+    modals[1].hidden = false;
+  }, 3000);
+
+  setTimeout(() => {
+    modals[1].hidden = true;
+    modals[2].hidden = false;
+    extractTags(TAGS);
+  }, 5000);
+
+  setTimeout(() => {
+    modals[2].hidden = true;
+    screens[0].classList.remove('off');
+    screens[1].classList.remove('off');
+    startDefrag();
+  }, 7000);
+};
+
+const extractTags = tags => {
+  if (tags.length > 0)
+  setTimeout(() => {
+    folders.textContent = tags.shift();
+    extractTags(tags);
+  }, 100);
+};
+
+startDialogs();
+
+document.addEventListener('keydown', function (event) {
+  if (event.altKey || event.code == 'F10')
+  location.href = 'https://twitter.com/Manz';
+});
+</script>
+
+</body>
+</html>

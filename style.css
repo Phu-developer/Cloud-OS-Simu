@@ -1,0 +1,158 @@
+body{
+  overflow: hidden;
+  height: 100%;
+  width:100%;
+  margin: 0px;
+
+
+padding: 0px;
+  -webkit-user-select: none;
+
+/*  background: -moz-linear-gradient(top left, #33799d, #e8ebb4);
+background: -o-linear-gradient(top left, #33799d, #e8ebb4);
+background: -webkit-linear-gradient(top left, #33799d, #e8ebb4);
+background: linear-gradient(to bottom right, #33799d, #e8ebb4);*/
+background: #eee url('AcrobaticResponsibleAsianelephant-size_restricted.gif') no-repeat fixed center center / cover;font-family: Tahoma, "Trebuchet MS", sans-serif; 
+}
+
+
+
+.window {
+    overflow: hidden;
+    z-index:5;
+  position:absolute;
+    display: block; 
+  background-color: rgb(0, 0, 0, 0.7);
+  -moz-box-shadow: rgba(0, 0, 0, 0.1) 1px 1px, rgba(0, 0, 0, 0.1) -1px -1px, rgba(0, 0, 0, 0.1) 1px -1px, rgba(0, 0, 0, 0.1) -1px 1px, rgba(0, 0, 0, 0.8) 0 0 70px;  -webkit-box-shadow: rgba(0, 0, 0, 0.1) 1px 1px, rgba(0, 0, 0, 0.1) -1px -1px, rgba(0, 0, 0, 0.1) 1px -1px, rgba(0, 0, 0, 0.1) -1px 1px, rgba(0, 0, 0, 0.8) 0 0 70px;  box-shadow: rgba(0, 0, 0, 0.1) 1px 1px, rgba(0, 0, 0, 0.1) -1px -1px, rgba(0, 0, 0, 0.1) 1px -1px, rgba(0, 0, 0, 0.1) -1px 1px, rgba(0, 0, 0, 0.8) 0 0 70px;
+  -moz-border-radius: 5px;
+  -webkit-border-radius: 5px;
+  border-radius: 5px;
+  min-width: 600px; 
+  min-height: 350px;
+  margin: 0 auto;
+  
+}
+
+#toolbar {
+cursor:move;
+height: 25px;
+position: relative;
+display: block;
+border-bottom: solid 1px #686868;
+background: black;
+
+
+}
+
+#windowname {
+position: absolute;
+left: 5px;
+font-size: 13px;
+line-height: 23px;
+color: white;
+}
+
+.lights-1:hover {
+color: red;
+content: '+';
+}
+
+.lights-1 {
+cursor:pointer;
+position: absolute;
+display: inline;
+left: 4px;
+font-size: 20px;
+width: 12px;
+height: 12px;
+display: block;
+margin: 3px 15px 4px 4px;
+float: right;
+position: relative;
+color: white
+
+}
+
+
+.lights-2:hover {
+color: green;
+content: '+';
+}
+
+.lights-2 {
+cursor:pointer;
+position: absolute;
+display: inline;
+left: 4px;
+font-size: 20px;
+width: 12px;
+height: 12px;
+display: block;
+margin: 3px 5px 4px 4px;
+float: right;
+position: relative;
+color: white
+
+}
+textarea {
+margin-top: 5px;
+width: 99%;
+min-height: 309px;
+height: 100%;
+max-width: 106%;
+border: 0;
+background-color: #ededed;
+resize: horizontal;
+}
+
+.icon {
+padding: 10px;
+width: 70px;
+height: 70px;
+float: left;
+background: rgba(68, 68, 68, 0.0);
+margin: 5px;
+cursor: pointer;
+color: #fff;
+font-size: 35px;
+text-align: center;
+}
+
+.icon p {
+margin: 10px;
+font-size: 14px;
+color: #FFFFFF;
+}
+
+.icon:hover {
+background: rgba(68, 68, 68, 0.2);
+transition: all .3s linear;
+-o-transition: all .3s linear;
+-moz-transition: all .3s linear;
+-webkit-transition: all .3s linear;
+}
+
+#icons {
+width: 200px;
+height: 100%;
+float: left;
+}
+
+#sidebar {
+float: right;
+width: 250px;
+height: 100%;
+right: 0;
+top: 0;
+position: absolute;
+opacity: .4;
+overflow: hidden;
+}
+
+#sidebar:hover {
+opacity: 0.8;
+transition: all .5s linear;
+-o-transition: all .5s linear;
+-moz-transition: all .5s linear;
+-webkit-transition: all .5s linear;
+}
